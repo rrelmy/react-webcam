@@ -150,14 +150,14 @@ export default class Webcam extends React.Component<WebcamProps, WebcamState> {
   }
 
   private static stopMediaStream(stream: MediaStream | null) {
-    if (stream) {
-      if (stream.getVideoTracks && stream.getAudioTracks) {
-        stream.getVideoTracks().map(track => track.stop());
-        stream.getAudioTracks().map(track => track.stop());
-      } else {
-        ((stream as unknown) as MediaStreamTrack).stop();
-      }
+    if (!stream) {
+      return;
     }
+
+    stream.getTracks().forEach((track) => {
+      stream.removeTrack(track);
+      track.stop();
+    })
   }
 
   private stopAndCleanup() {
